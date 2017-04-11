@@ -712,11 +712,31 @@ ORDER BY `Orders Made` DESC;
 
 
 -- 47. Find names of employees and their subordinates.
-TODO
+SELECT CONCAT(e1.firstname, ' ', e1.lastname) AS Employee, CONCAT(e2.firstname, ' ', e2.lastname) AS Subordinate
+FROM employees AS e1
+INNER JOIN employees AS e2 
+ON e1.employeeid = e2.reportsto 
+ORDER BY Employee;
++-----------------+------------------+
+| Employee        | Subordinate      |
++-----------------+------------------+
+| Andrew Fuller   | Janet Leverling  |
+| Andrew Fuller   | Nancy Davolio    |
+| Andrew Fuller   | Steven Buchanan  |
 
 
 -- 48. Find names of employees and their subordinates. Show also employees that don't have subordinate.
-TODO
+SELECT CONCAT(e1.firstname, ' ', e1.lastname) AS Employee, CONCAT(e2.firstname, ' ', e2.lastname) AS Subordinate
+FROM employees AS e1
+LEFT JOIN employees AS e2 
+ON e1.employeeid = e2.reportsto 
+ORDER BY Employee;
++------------------+------------------+
+| Employee         | Subordinate      |
++------------------+------------------+
+| Andrew Fuller    | Steven Buchanan  |
+| Andrew Fuller    | Margaret Peacock |
+| Andrew Fuller    | Laura Callahan   |
 
 
 -- 49. Find products having quantity in stock less than their reorderlevel.
@@ -1086,11 +1106,39 @@ DROP Table Teams;
 
 
 -- 78. Find names of territory managers in each region, also include the territory name and the description of the region they work in.
-TODO
+-- The next two queries are using OracleSQL, because the MySQL Northwind version I have does not include all the tables.
+SELECT CONCAT(firstname, CONCAT(' ', lastname)) AS Employee, region.regiondescription AS Region, territories.territorydescription AS Territory
+FROM employees 
+JOIN employeeterritories 
+ON employees.employeeid = employeeterritories.employeeid 
+JOIN territories 
+ON employeeterritories.territoryid = territories.territoryid 
+JOIN region 
+ON region.regionid = territories.regionid 
+ORDER BY Employee;
+
+EMPLOYEE	REGION	TERRITORY
+Andrew Fuller	Eastern	Bedford
+Andrew Fuller	Eastern	Braintree
+Andrew Fuller	Eastern	Louisville
 
 
 -- 79. How many managers are there in each region?
-TODO
+SELECT COUNT(employees.employeeid) AS Employees, region.regiondescription AS Region
+FROM employees 
+JOIN employeeterritories 
+ON employees.employeeid = employeeterritories.employeeid 
+JOIN territories 
+ON employeeterritories.territoryid = territories.territoryid 
+JOIN region 
+ON region.regionid = territories.regionid 
+GROUP BY region.regiondescription 
+ORDER BY Employees;
+
+EMPLOYEES	REGION
+4	Southern
+11	Northern
+15	Western
 
 
 -- 80. Find products which have reorderlevel 10, 25 or 30.
